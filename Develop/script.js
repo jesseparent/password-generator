@@ -1,4 +1,6 @@
+//
 // Generate a password that obeys a set of requirements
+//
 let generatePassword = function () {
   // Set object for requirements
   let requirements = {
@@ -15,7 +17,9 @@ let generatePassword = function () {
   console.log(requirements);
 };
 
+//
 // Gather requirements from user prompts and record requirements in a "requirements" object that is passed by reference
+//
 let gatherRequirements = function (requirements) {
   // Ask user for password length
   let passwordLength = window.prompt("How many characters should your password be (8-128 characters?");
@@ -41,7 +45,9 @@ let gatherRequirements = function (requirements) {
 // Get references to the #generate element
 var generateBtn = document.querySelector("#generate");
 
+//
 // Write password to the #password input
+//
 let writePassword = function () {
   var password = generatePassword();
   var passwordText = document.querySelector("#password");
