@@ -1,17 +1,21 @@
+// Global variables for password length requirements
+const minPasswordLength = 8;
+const maxPasswordLength = 128;
+
 // Global variables for character sets
-let lowercaseCharacters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p",
+const lowercaseCharacters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p",
   "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
-let uppercaseCharacters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P",
+const uppercaseCharacters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P",
   "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
-let numericCharacters = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
-let specialCharacters = [" ", "!", "\"", "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/",
+const numericCharacters = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+const specialCharacters = [" ", "!", "\"", "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/",
   ":", ";", "<", "=", ">", "?", "@", "[", "\\", "]", "^", "_", "`", "{", "|", "}", "~"];
 //
 // Generate a password that obeys a set of requirements
 //
 let generatePassword = function () {
   // Set object for requirements
-  let requirements = {
+  const requirements = {
     length: 0,
     lowercase: false,
     uppercase: false,
@@ -31,10 +35,10 @@ let generatePassword = function () {
   gatherRequirements(requirements);
 
   // Create password based on requirements
-  let password = createPasswordBasedOnRequirements(requirements);
+  const password = createPasswordBasedOnRequirements(requirements);
 
   // Return generated password
-  console.log(requirements.atLeastOneSelected());
+  return password;
 };
 
 //
@@ -42,14 +46,14 @@ let generatePassword = function () {
 //
 let gatherRequirements = function (requirements) {
   // Ask user for password length
-  let passwordLength = window.prompt("How many characters should your password be (8-128 characters?");
+  let passwordLength = window.prompt("How many characters should your password be (" + minPasswordLength + "-" + maxPasswordLength + ") characters?");
   passwordLength = parseInt(passwordLength);
 
   // Get character requirements for password 
   // Keep asking if the user doesn't select at least one character requirement
   do {
-    // If the password length entered is within the parameters of 8 to 128 characters, inclusive
-    if ((passwordLength >= 8) && (passwordLength <= 128)) {
+    // If the password length entered is within the parameters of minPasswordLength to maxPasswordLength characters, inclusive
+    if ((passwordLength >= minPasswordLength) && (passwordLength <= maxPasswordLength)) {
       requirements.length = passwordLength;
 
       // Collect requirements regarding what types of characters must be included
@@ -59,6 +63,7 @@ let gatherRequirements = function (requirements) {
       requirements.special = window.confirm("Should the password include special characters?");
     }
     // Password length not valid, allow user to enter it, again
+    // Call the function recursively so we don't fall to the if statement, below
     else {
       alert("Please enter a number between 8 and 128, inclusive.");
       gatherRequirements(requirements);
@@ -80,10 +85,9 @@ let createPasswordBasedOnRequirements = function (requirements) {
   let createdPassword = "";
 
   // Track requirements to make sure each are met
-  let requirementsTracker = {
-  };
-  let listOfCharacterRequirements = []; // list which character requirements are needed
-  let characterArrays = []; // List of allowed characters
+  let requirementsTracker = {}; // Count of each character type so we can make sure each requirement is met
+  let listOfCharacterRequirements = []; // List of which character requirements are needed
+  let characterArrays = []; // List of allowed characters for password generation - two dimensional array
 
   if (requirements.lowercase) {
     requirementsTracker.lowercase = 0;
@@ -106,32 +110,53 @@ let createPasswordBasedOnRequirements = function (requirements) {
     characterArrays.push(specialCharacters);
   }
 
+  let allRequirementsNotMet = true;
+
   // Create a password of the required length
   for (let i = 0; i < requirements.length; i++) {
+    // Look at all the required character types and pick one
     let randomRequirementIndex = Math.floor(Math.random() * listOfCharacterRequirements.length);
+
+    // If we are getting close to completing the password, make sure all the requirements have been met
+    // and if we find a required character type that is still not picked, use a character from that requirement
+    let nearTheEnd = listOfCharacterRequirements.length > (requirements.length - i);
+    if (nearTheEnd && allRequirementsNotMet) {
+      console.log("----\nnear the end");
+      allRequirementsNotMet = false; // If we don't find a problem, all the required character types have been used. No need to check, again
+      for (let requirement in requirementsTracker) {
+        if (requirementsTracker[requirement] === 0) {
+          allRequirementsNotMet = true; // Found a problem, so we will need to check again on the next run
+          console.log(requirement + " is still at 0. Use that.");
+          console.log(requirement + " is at index " + listOfCharacterRequirements.indexOf(requirement));
+          randomRequirementIndex = listOfCharacterRequirements.indexOf(requirement);
+          break;
+        }
+      }
+    }
+
+    // Pick a random character from the selected character type list
     let randomCharacterIndex = Math.floor(Math.random() * characterArrays[randomRequirementIndex].length);
 
+    // Keep track of how many of which character type was used
     requirementsTracker[listOfCharacterRequirements[randomRequirementIndex]]++;
-    console.log("Increased " + listOfCharacterRequirements[randomRequirementIndex] + " to " + requirementsTracker[listOfCharacterRequirements[randomRequirementIndex]]);
+
+    // Add the character to the end of the password
     createdPassword += characterArrays[randomRequirementIndex][randomCharacterIndex];
   }
 
-  var lc = "lowercase";
-  console.log("Tracking: " + JSON.stringify(requirementsTracker));
-  eval("console.log(requirementsTracker." + lc + ");");
-  console.log(createdPassword);
+  // Return the created password
   return createdPassword;
 }
 
 // Get references to the #generate element
-var generateBtn = document.querySelector("#generate");
+const generateBtn = document.querySelector("#generate");
 
 //
 // Write password to the #password input
 //
 let writePassword = function () {
-  var password = generatePassword();
-  var passwordText = document.querySelector("#password");
+  const password = generatePassword();
+  const passwordText = document.querySelector("#password");
 
   passwordText.value = password;
 };
