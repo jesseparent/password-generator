@@ -58,7 +58,7 @@ let gatherRequirements = function (requirements) {
 
     // If this is NaN or has an invalid length, enter again
     if (!passwordLength || !((passwordLength >= minPasswordLength) && (passwordLength <= maxPasswordLength))) {
-      alert("Please enter a valid password length.");
+      alert("Please enter a valid password length - (" + minPasswordLength + "-" + maxPasswordLength + ") characters.");
     }
   } while (!passwordLength || !((passwordLength >= minPasswordLength) && (passwordLength <= maxPasswordLength)));
 
