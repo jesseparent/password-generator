@@ -53,7 +53,7 @@ let gatherRequirements = function (requirements) {
   // Ask user for password length
   // If password length not valid, allow user to enter it, again
   do {
-    passwordLength = window.prompt("How many characters should your password be (" + minPasswordLength + "-" + maxPasswordLength + ") characters?");
+    passwordLength = window.prompt("How many characters should your password be (" + minPasswordLength + "-" + maxPasswordLength + ")?");
     passwordLength = parseInt(passwordLength);
 
     // If this is NaN or has an invalid length, enter again
@@ -62,10 +62,10 @@ let gatherRequirements = function (requirements) {
     }
   } while (!passwordLength || !((passwordLength >= minPasswordLength) && (passwordLength <= maxPasswordLength)));
 
-  // Password length entered is within the parameters of minPasswordLength to maxPasswordLength characters, inclusive
+  // Success! Password length entered is within the parameters of minPasswordLength to maxPasswordLength characters, inclusive
   requirements.length = passwordLength;
 
-  // Get character requirements for password 
+  // Get character type requirements for password 
   // Keep asking if the user doesn't select at least one character requirement
   do {
     // Collect requirements regarding what types of characters must be included
@@ -94,6 +94,7 @@ let createPasswordBasedOnRequirements = function (requirements) {
   let listOfCharacterRequirements = []; // List of which character type requirements are needed
   let characterArrays = []; // List of allowed characters for password generation - two dimensional array
 
+  // Populate the structures needed to track and fulfill requirements
   trackRequirements(requirements, requirementsTracker, listOfCharacterRequirements, characterArrays);
 
   // Keep track or whether all required character types have been used
@@ -130,7 +131,7 @@ let createPasswordBasedOnRequirements = function (requirements) {
     // Pick a random character from the selected character type list
     let randomCharacterIndex = Math.floor(Math.random() * characterArrays[randomRequirementIndex].length);
 
-    // Keep track of if a character type was used
+    // Keep track of whether a character type was used
     requirementsTracker[listOfCharacterRequirements[randomRequirementIndex]] = true;
 
     // Add the character to the end of the password
