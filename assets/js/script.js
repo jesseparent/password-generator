@@ -69,10 +69,10 @@ let gatherRequirements = function (requirements) {
   // Keep asking if the user doesn't select at least one character requirement
   do {
     // Collect requirements regarding what types of characters must be included
-    requirements.lowercase = window.confirm("Should the password include lowercase characters?");
-    requirements.uppercase = window.confirm("Should the password include uppercase characters?");
-    requirements.numeric = window.confirm("Should the password include numeric characters?");
-    requirements.special = window.confirm("Should the password include special characters?");
+    requirements.lowercase = window.confirm("Should the password include lowercase characters\n(OK for 'Yes', Cancel for 'No')?");
+    requirements.uppercase = window.confirm("Should the password include uppercase characters\n(OK for 'Yes', Cancel for 'No')?");
+    requirements.numeric = window.confirm("Should the password include numeric characters\n(OK for 'Yes', Cancel for 'No')?");
+    requirements.special = window.confirm("Should the password include special characters\n(OK for 'Yes', Cancel for 'No')?");
 
     // Make sure the user selected at least one character requirement
     if (!requirements.atLeastOneSelected()) {
